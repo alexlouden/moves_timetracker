@@ -57,8 +57,6 @@ def parse():
 
 def analyse(place):
 
-    print place
-
     data = defaultdict(lambda: defaultdict(datetime.timedelta))
     dates = defaultdict(lambda: defaultdict(list))
 
