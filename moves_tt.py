@@ -1,9 +1,8 @@
+import datetime
 import json
-from dateutil import parser
 import sys
 from collections import defaultdict
-import datetime
-from pprint import pprint
+from dateutil import parser
 
 
 WEEKDAY = {
@@ -93,13 +92,14 @@ def prettyprint(placedata, dates, weeks):
     hours = 0
     count = 0
 
-    for weeknum, week in placedata.iteritems():
+    for weeknum, week in sorted(placedata.iteritems(), key=lambda x: x[0]):
         print
         print '-' * 20
         print 'Week {}'.format(weeknum)
         print '-' * 20
 
         for daynum, time in week.iteritems():
+
             end = dates[weeknum][daynum][-1]['end']
             start = dates[weeknum][daynum][0]['start']
             print '{day} {start:{dfmt}}'.format(
@@ -123,9 +123,11 @@ def prettyprint(placedata, dates, weeks):
 
     print
     print '=' * 20
-    print 'Hours: {}'.format(hours)
+    print 'Hours: {:.2f}'.format(hours)
     print 'Days: {}'.format(count)
-    print 'Average: {:.2f}'.format(hours / count)
+    print 'Average: {:.2f} h/d'.format(hours / count)
+
+
 def print_places(places):
 
     place_times = []
