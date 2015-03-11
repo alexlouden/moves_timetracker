@@ -17,7 +17,7 @@ WEEKDAY = {
 
 
 def parse():
-    with open('moves.json')as f:
+    with open('moves.json') as f:
         data = json.load(f)
 
     data = data['export']
@@ -83,6 +83,10 @@ def analyse(place):
     return data, dates, days, weeks
 
 
+def td_to_hours(td):
+    return td.total_seconds() / 60 / 60
+
+
 def prettyprint(placedata, dates, weeks):
 
     hours = 0
@@ -95,13 +99,19 @@ def prettyprint(placedata, dates, weeks):
         print '-' * 20
 
         for daynum, time in week.iteritems():
-            print '{day} = {start:{fmt}} - {end:{fmttime}} = {hours:.2f}'.format(
-                start=dates[weeknum][daynum][0]['start'],
-                end=dates[weeknum][daynum][-1]['end'],
-                fmt='%Y/%m/%d %H:%M:%S',
-                fmttime='%H:%M:%S',
+            end = dates[weeknum][daynum][-1]['end']
+            start = dates[weeknum][daynum][0]['start']
+            print '{day} {start:{dfmt}}'.format(
                 day=WEEKDAY[daynum],
-                hours=time.total_seconds() / 60 / 60
+                start=start,
+                dfmt='%Y/%m/%d',
+            )
+            print '{start:{fmttime}} - {end:{fmttime}} = {hours:.2f} ({total:.1f})'.format(
+                start=start,
+                end=end,
+                fmttime='%H:%M:%S',
+                hours=td_to_hours(time),
+                total=td_to_hours(end - start)
             )
 
         print 'Total: {:.2f}'.format(weeks[weeknum])
@@ -119,7 +129,9 @@ def prettyprint(placedata, dates, weeks):
 if __name__ == '__main__':
     data, places = parse()
 
-    toastface = places['Toastface Grillah']
-    placedata, dates, days, weeks = analyse(toastface)
+    print places.keys()
+
+    home = places['Cranked']
+    placedata, dates, days, weeks = analyse(home)
 
     prettyprint(placedata, dates, weeks)
