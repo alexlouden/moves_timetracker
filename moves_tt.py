@@ -1,5 +1,6 @@
 import json
 from dateutil import parser
+import sys
 from collections import defaultdict
 import datetime
 from pprint import pprint
@@ -125,13 +126,32 @@ def prettyprint(placedata, dates, weeks):
     print 'Hours: {}'.format(hours)
     print 'Days: {}'.format(count)
     print 'Average: {:.2f}'.format(hours / count)
+def print_places(places):
+
+    place_times = []
+
+    print 'Places:'
+    for place_name, visits in places.iteritems():
+        hours = sum(v['duration'].total_seconds() for v in visits)
+        hours /= 60 * 60
+        safe_name = place_name.encode('ascii', 'ignore')
+        place_times.append([safe_name, hours])
+
+    place_times.sort(key=lambda x: x[1], reverse=True)
+
+    for name, hours in place_times:
+        print ' - {} ({:.2f}h)'.format(name, hours)
+
 
 if __name__ == '__main__':
     data, places = parse()
 
-    print places.keys()
+    try:
+        work_name = sys.argv[1]
+    except IndexError:
+        print_places(places)
+    else:
+        work = places[work_name]
+        placedata, dates, days, weeks = analyse(work)
 
-    home = places['Cranked']
-    placedata, dates, days, weeks = analyse(home)
-
-    prettyprint(placedata, dates, weeks)
+        prettyprint(placedata, dates, weeks)
