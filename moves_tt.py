@@ -106,7 +106,7 @@ def prettyprint(placedata, dates, weeks):
                 start=start,
                 dfmt='%Y/%m/%d',
             )
-            print '{start:{fmttime}} - {end:{fmttime}} = {hours:.2f} ({total:.1f})'.format(
+            print '{start:{fmttime}} - {end:{fmttime}} = {total:.1f}'.format(
                 start=start,
                 end=end,
                 fmttime='%H:%M:%S',
